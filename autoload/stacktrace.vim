@@ -42,14 +42,15 @@ endfunction
 " lnum	    line number in the file
 function! s:parse_stack_frame(line)
   let parts = matchlist(a:line, '^\s\s*at \([^(]*\)(\([^:]*\):\(\d*\))')
-  let classAndMethod = parts[1]
-  let filename = parts[2]
-  let path = s:find_file_path(classAndMethod, filename)
-  if filereadable(path)
-    return {'text': classAndMethod, 'filename': path, 'lnum': parts[3]}
-  else
-    return {'text': a:line}
-  end
+  if len(parts) > 0
+    let classAndMethod = parts[1]
+    let filename = parts[2]
+    let path = s:find_file_path(classAndMethod, filename)
+    if filereadable(path)
+      return {'text': classAndMethod, 'filename': path, 'lnum': parts[3]}
+    end
+  endif
+  return {'text': a:line}
 endfunction
 
 function! s:parse_stack_trace(lines)
